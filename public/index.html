@@ -1,0 +1,89 @@
+<!doctype html>
+<html>
+
+<head>
+    <meta charset="utf-8">
+    <meta http-equiv="x-ua-compatible" content="ie=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover, shrink-to-fit=no">
+    <link rel="stylesheet" type="text/css" href="/public/css/styles.css" />
+    <link rel="apple-touch-icon" sizes="152x152" href="/apple-touch-icon.png">
+    <link rel="icon" type="image/png" sizes="32x32" href="/favicon-32x32.png">
+    <link rel="icon" type="image/png" sizes="16x16" href="/favicon-16x16.png">
+    <meta name="msapplication-TileColor" content="#da532c">
+    <meta name="theme-color" content="#ffffff">
+
+    <style>
+        #view {
+            color: #000;
+            font-family: Helvetica, sans-serif;
+        }
+    </style>
+
+    <script>
+        window.onload = function() {
+        // create Router constructor
+
+        // grab all active attrivute routes
+
+        var activeRoutes = Array.from(document.querySelectorAll('[route]'));
+        
+            console.log("DOM has loaded.");
+
+            var Router = function(name, routes) {
+                return {
+                    name: name,
+                    routes: routes
+                }
+            };
+            
+            var view = document.getElementById('view');
+
+            var myFirstRouter = new Router('myFirstRouter', 
+            [
+                {
+                    path: '/',
+                    name: 'Root'
+                },
+                {
+                    path: '/about',
+                    name: 'About'
+                },
+                {
+                    path: '/contact',
+                    name: 'Contact'
+                }
+            ]);
+
+            var currentPath = window.location.pathname;
+
+            if (currentPath === '/') {
+                view.innerHTML = 'You are on the root page';
+            } else {
+                var route = myFirstRouter.routes.filter(function(r) {
+                    return r.path === currentPath
+                })[0];
+                
+                if (route) {
+                    view.innerHTML = 'You are on the ' + route.name + ' path';
+                } else {
+                    view.innerHTML = '404 - Page not found';
+                }
+            }
+        }
+    </script>
+
+    <title>PDP Project</title>
+</head>
+
+<body>
+    <h3>Simple router</h3>
+    <div id="view">
+        
+    </div>
+    <button route="/">Root</button>
+    <button route="/about">About</button>
+    <button route="/contact">Contact</button>
+    <button>404 Page</button>
+</body>
+
+</html>
