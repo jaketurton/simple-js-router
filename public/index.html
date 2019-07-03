@@ -20,57 +20,75 @@
     </style>
 
     <script>
-        window.onload = function() {
-        // create Router constructor
+    window.onload = function() {
+    console.log("DOM has loaded.");
 
-        // grab all active attrivute routes
+    var view = document.getElementById('view');
 
-        var activeRoutes = Array.from(document.querySelectorAll('[route]'));
+    // create Router constructor
+    var activeRoutes = Array.from(document.querySelectorAll('[route]'));
+
+    function navigate(event) {
+        var route = event.target.attributes[0].value;
+        var routeInfo = myFirstRouter.routes.filter(function(r) {
+            return r.path === route;
+        })[0];
         
-            console.log("DOM has loaded.");
-
-            var Router = function(name, routes) {
-                return {
-                    name: name,
-                    routes: routes
-                }
-            };
-            
-            var view = document.getElementById('view');
-
-            var myFirstRouter = new Router('myFirstRouter', 
-            [
-                {
-                    path: '/',
-                    name: 'Root'
-                },
-                {
-                    path: '/about',
-                    name: 'About'
-                },
-                {
-                    path: '/contact',
-                    name: 'Contact'
-                }
-            ]);
-
-            var currentPath = window.location.pathname;
-
-            if (currentPath === '/') {
-                view.innerHTML = 'You are on the root page';
-            } else {
-                var route = myFirstRouter.routes.filter(function(r) {
-                    return r.path === currentPath
-                })[0];
-                
-                if (route) {
-                    view.innerHTML = 'You are on the ' + route.name + ' path';
-                } else {
-                    view.innerHTML = '404 - Page not found';
-                }
-            }
+        if (!routeInfo) {
+            window.history.pushState({}, '', 'error');
+            view.innerHTML = 'No route exists with this path'
+        } else {
+            window.history.pushState({}, 'name', routeInfo.path);
+            console.log(window.history);
+            view.innerHTML = 'You have clicked the ' + routeInfo.name + ' route';
         }
-    </script>
+    };
+
+    // grab all active attrivute routes
+    activeRoutes.forEach(function(route) {
+        route.addEventListener('click', navigate, false);
+    });
+
+    var Router = function(name, routes) {
+        return {
+            name: name,
+            routes: routes
+        }
+    };
+    
+    var myFirstRouter = new Router('myFirstRouter', 
+    [
+        {
+            path: '/',
+            name: 'Root'
+        },
+        {
+            path: '/about',
+            name: 'About'
+        },
+        {
+            path: '/contact',
+            name: 'Contact'
+        }
+    ]);
+
+    var currentPath = window.location.pathname;
+
+    if (currentPath === '/') {
+        view.innerHTML = 'You are on the root page';
+    } else {
+        var route = myFirstRouter.routes.filter(function(r) {
+            return r.path === currentPath
+        })[0];
+        
+        if (route) {
+            view.innerHTML = 'You are on the ' + route.name + ' path';
+        } else {
+            view.innerHTML = '404 - Page not found';
+        }
+    }
+}
+    </script>  
 
     <title>PDP Project</title>
 </head>
@@ -83,7 +101,7 @@
     <button route="/">Root</button>
     <button route="/about">About</button>
     <button route="/contact">Contact</button>
-    <button>404 Page</button>
+    <button route="/404">404 Page</button>
 </body>
 
 </html>
