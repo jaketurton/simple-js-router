@@ -4,16 +4,32 @@ window.addEventListener('DOMContentLoaded', function() {
 
     // Create variable for main view id and array of all routes
     var view = document.getElementById('view');
-    var activeRoutes = Array.from(document.querySelectorAll('[route]'));
+    var currentPath = window.location.pathname;
+
+    fetchContent(currentPath);
+
+    function changeContent(content) {
+        view.innerHTML = content;
+    }
 
     function fetchContent(route) {
+        // Set variable currentPath to / or /whatever
+        currentPath = window.location.pathname;
+
+        console.log('After fetch content currentPath is: ' + currentPath);
+
         fetch('/views/' + route + '.html', {})
         .then( res => res.text())
         .then((data) => {
-             console.log(data);
+            changeContent(data);
+            pushRouteToWindowHistory(route);
         });
     }
-    
+
+    function pushRouteToWindowHistory(currentPath) {
+        window.history.pushState({}, currentPath, window.location.origin + currentPath);
+    }
+
     // Assign route to the value on click, return value, if not a defined route error else show that routes content.
     function navigateOnClick(event) {
         var route = event.target.attributes[0].value;
@@ -21,15 +37,13 @@ window.addEventListener('DOMContentLoaded', function() {
         // todo: Fetch content for this route
     };
 
+    var activeRoutes = Array.from(document.querySelectorAll('[route]'));
+    
     // Bind navigate functions to click event of all route buttons
     activeRoutes.forEach(function(route) {
         route.addEventListener('click', navigateOnClick, false);
     });
 
-    // Set variable currentPath to / or /whatever
-    var currentPath = window.location.pathname;
-    
-    // Change content when URL changes
-    window.addEventListener('HashChangeEvent', fetchContent(currentPath));
+    window.addEventListener('popstate', fetchContent(currentPath));
     
 })
