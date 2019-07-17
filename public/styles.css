@@ -1,0 +1,49 @@
+
+    #view {
+        color: #000;
+        font-family: Helvetica, sans-serif;
+    }
+
+    body {
+        font-family: 'Helvetica', sans-serif;
+        font-size: 2em;
+        height: 100%;
+        background: #f4f4f4;
+    }
+
+    button {
+        margin-bottom: 2em;
+    }
+
+    h1 {
+        font-size: 1em;
+    }
+
+    a {
+        text-decoration: none;
+        color: inherit;
+    }
+
+    nav {
+        margin-bottom: 1em;
+    }
+
+    a.navigation {
+        display: inline-block;
+        text-decoration: none;
+        color: inherit;
+        background: black;
+        color: #fff;
+        padding: 0.5em;
+        font-size: 0.65em;
+    }
+
+    a.navigation:hover {
+        cursor: pointer;
+        text-decoration: none;
+        background: #999;
+    }
+
+    a:hover {
+        text-decoration: underline;
+    }

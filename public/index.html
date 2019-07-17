@@ -10,132 +10,22 @@
     <link rel="icon" type="image/png" sizes="16x16" href="/favicon-16x16.png">
     <meta name="msapplication-TileColor" content="#da532c">
     <meta name="theme-color" content="#ffffff">
+    <link rel="stylesheet" type="text/css" href="/styles.css">
+    <script src="app.js"></script>
 
-    <style>
-        #view {
-            color: #000;
-            font-family: Helvetica, sans-serif;
-        }
-
-        body {
-            font-family: 'Helvetica', sans-serif;
-            font-size: 2em;
-            height: 100%;
-            background: #f4f4f4;
-        }
-
-        button {
-            margin-bottom: 2em;
-        }
-
-        h1 {
-            font-size: 1em;
-        }
-
-        a {
-            text-decoration: none;
-            color: inherit;
-        }
-
-        a:hover {
-            text-decoration: underline;
-        }
-
-    </style>
-
-    <script>
-    // Run code when DOM loads
-    window.onload = function() {
-    console.log("DOM has loaded.");
-
-    // Create variable for main view id and array of all routes
-    var view = document.getElementById('view');
-    var activeRoutes = Array.from(document.querySelectorAll('[route]'));
-    
-    // Assign route to the value on click, return value, if not a defined route error else show that routes content.
-    function navigate(event) {
-        var route = event.target.attributes[0].value;
-        var routeInfo = myFirstRouter.routes.filter(function(r) {
-            return r.path === route;
-        })[0];
-        
-        if (!routeInfo) {
-            window.history.pushState({}, '', 'error');
-            view.innerHTML = 'No route exists with this path'
-        } else {
-            window.history.pushState({}, 'name', routeInfo.path);
-            view.innerHTML = 'You have clicked the ' + routeInfo.name + ' route';
-        }
-    };
-
-    // Bind navigate functions to click event of all route buttons
-    activeRoutes.forEach(function(route) {
-        route.addEventListener('click', navigate, false);
-    });
-
-    // Create router
-    var Router = function(name, routes) {
-        return {
-            name: name,
-            routes: routes
-        }
-    };
-
-    // Initialise new router named myFirstRouter
-    var myFirstRouter = new Router('myFirstRouter', 
-    [
-        {
-            path: '/',
-            name: 'Root'
-        },
-        {
-            path: '/about',
-            name: 'About'
-        },
-        {
-            path: '/contact',
-            name: 'Contact'
-        }
-    ]);
-    
-    // Set variable currentPath to / or /whatever
-    var currentPath = window.location.pathname;
-    
-    // Display root content when URL is /
-    if (currentPath === '/') {
-        view.innerHTML = 'You are on the root page';
-    } else {
-
-        // Filter through routes, if currentPath is that route then display that specific content
-        var route = myFirstRouter.routes.filter(function(r) {
-            return r.path === currentPath
-        })[0];
-        
-        if (route) {
-            view.innerHTML = 'You are on the ' + route.name + ' path';
-        } else {
-            // If currentPath doesn't equal a set route, display the 404 page content
-            view.innerHTML = '404 - Page not found';
-        }
-    }
-}
-    </script>  
-
-    <title>PDP Project</title>
+    <title>JS Router</title>
 </head>
 
 <body>
-    <h1>Simple router</h1>
-
-    <button route="/">Root</button>
-    <button route="/about">About</button>
-    <button route="/contact">Contact</button>
-    <button route="/404">404 Page</button>
+    <nav>
+        <a route="/one" class="navigation">One</a>
+        <a route="/two" class="navigation">Two</a>
+        <a route="/three" class="navigation">Three</a>
+    </nav>
     
     <div id="view">
         <!-- Dynamic content loads here -->    
     </div>
-    
 </body>
 
 </html>
