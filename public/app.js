@@ -27,22 +27,17 @@ window.addEventListener('DOMContentLoaded', function() {
         }
 
         caches.match('/views' + route + '.html').then(function(response) {
-            console.log(response);
-
-            // response.text().then(function(data) {
-            //     console.log(data);
-            // });
 
             if (response) {
                 console.log('Cache found for /views' + route + '.html');
-                console.log(response);
-                fetch(response, {})
-                .then( res => res.text())
-                .then((data) => {
-                    console.log('loaded from cache');
-                    console.log(data);
-                    changeContent(data);
-                });
+                var actualData;
+                
+                response.text().then(function(data) {
+                    actualData = data;
+                    //console.log(actualData);
+                    console.log('Loaded from cache ✨');
+                    changeContent(actualData);
+                })
             } else {
                 fetch('/views' + route + '.html', {})
                 .then( res => res.text())
@@ -50,24 +45,11 @@ window.addEventListener('DOMContentLoaded', function() {
                     caches.open('test-cache').then(function(cache) {
                         cache.add('/views' + route + '.html');
                     });
-                    console.log('NOT loaded from cache');
+                    console.log('NOT loaded from cache 😢');
                     changeContent(data);
                 });
             }
         });
-
-    
-        // .catch(function() {
-        //     fetch('/views' + route + '.html', {})
-        //     .then( res => res.text())
-        //     .then((data) => {
-        //         caches.open('test-cache').then(function(cache) {
-        //             cache.add('/views' + route + '.html');
-        //         });
-        //         console.log('NOT loaded from cache');
-        //         changeContent(data);
-        //     });
-        // });
     }
 
     function pushRouteToWindowHistory(currentPath) {
@@ -81,13 +63,9 @@ window.addEventListener('DOMContentLoaded', function() {
         pushRouteToWindowHistory(route);
 
         currentPath = route;
-
-        console.log('Currentpath set to: ' + currentPath);
     };
 
     window.addEventListener('popstate', function() {
-        console.log(window.location.pathname);
-
         fetchContent(window.location.pathname);
     });
     
