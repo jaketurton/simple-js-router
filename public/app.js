@@ -1,49 +1,58 @@
-// Run code when DOM loads
-window.addEventListener('DOMContentLoaded', function() {
-    console.log("DOM has loaded.");
 
-    // Create variable for main view id and array of all routes
+window.addEventListener('DOMContentLoaded', function() {
+
+    console.log('Is this keeping happening?')
+
     var view = document.getElementById('view');
     var currentPath = window.location.pathname;
 
+
+    
     fetchContent(currentPath);
 
     function changeContent(content) {
         view.innerHTML = content;
+
+        var activeRoutes = Array.from(document.querySelectorAll('[route]'));
+
+        activeRoutes.forEach(function(route) {
+            route.addEventListener('click', navigateOnClick, false);
+        });
     }
 
     function fetchContent(route) {
-        // Set variable currentPath to / or /whatever
-        currentPath = window.location.pathname;
 
-        console.log('After fetch content currentPath is: ' + currentPath);
+        // default route
+        if (route == "/") {
+            route = "/one";
+        }
 
         fetch('/views/' + route + '.html', {})
         .then( res => res.text())
         .then((data) => {
             changeContent(data);
-            pushRouteToWindowHistory(route);
         });
     }
 
     function pushRouteToWindowHistory(currentPath) {
+        //console.log(currentPath, window.location.origin + currentPath);
         window.history.pushState({}, currentPath, window.location.origin + currentPath);
     }
 
-    // Assign route to the value on click, return value, if not a defined route error else show that routes content.
-    function navigateOnClick(event) {
+    function navigateOnClick(e) {
         var route = event.target.attributes[0].value;
         fetchContent(route);
-        // todo: Fetch content for this route
+        pushRouteToWindowHistory(route);
+
+        currentPath = route;
+
+        console.log('Currentpath set to: ' + currentPath);
     };
 
-    var activeRoutes = Array.from(document.querySelectorAll('[route]'));
-    
-    // Bind navigate functions to click event of all route buttons
-    activeRoutes.forEach(function(route) {
-        route.addEventListener('click', navigateOnClick, false);
-    });
+    window.addEventListener('popstate', function() {
+        console.log(window.location.pathname);
 
-    window.addEventListener('popstate', fetchContent(currentPath));
+        fetchContent(window.location.pathname);
+    });
     
 })
