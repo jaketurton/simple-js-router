@@ -1,12 +1,12 @@
 
 window.addEventListener('DOMContentLoaded', function() {
-
-    console.log('Is this keeping happening?')
+    
+    caches.open('test-cache').then(function(cache) {
+        console.log("cache created");
+    });
 
     var view = document.getElementById('view');
     var currentPath = window.location.pathname;
-
-
     
     fetchContent(currentPath);
 
@@ -21,17 +21,49 @@ window.addEventListener('DOMContentLoaded', function() {
     }
 
     function fetchContent(route) {
-
         // default route
         if (route == "/") {
             route = "/one";
         }
 
-        fetch('/views/' + route + '.html', {})
-        .then( res => res.text())
-        .then((data) => {
-            changeContent(data);
+        caches.match('/views' + route + '.html').then(function(response) {
+            console.log(response);
+
+            if (response) {
+                console.log('Cache found for /views' + route + '.html');
+                console.log(response);
+                fetch(response, {})
+                .then( res => res.text())
+                .then((data) => {
+                    console.log('loaded from cache');
+                    console.log(data);
+                    changeContent(data);
+                });
+            } else {
+                fetch('/views' + route + '.html', {})
+                .then( res => res.text())
+                .then((data) => {
+                    caches.open('test-cache').then(function(cache) {
+                        cache.add('/views' + route + '.html');
+                    });
+                    console.log('NOT loaded from cache');
+                    changeContent(data);
+                });
+            }
         });
+
+    
+        // .catch(function() {
+        //     fetch('/views' + route + '.html', {})
+        //     .then( res => res.text())
+        //     .then((data) => {
+        //         caches.open('test-cache').then(function(cache) {
+        //             cache.add('/views' + route + '.html');
+        //         });
+        //         console.log('NOT loaded from cache');
+        //         changeContent(data);
+        //     });
+        // });
     }
 
     function pushRouteToWindowHistory(currentPath) {
