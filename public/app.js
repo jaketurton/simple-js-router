@@ -29,6 +29,10 @@ window.addEventListener('DOMContentLoaded', function() {
         caches.match('/views' + route + '.html').then(function(response) {
             console.log(response);
 
+            // response.text().then(function(data) {
+            //     console.log(data);
+            // });
+
             if (response) {
                 console.log('Cache found for /views' + route + '.html');
                 console.log(response);
