@@ -1,13 +1,23 @@
 
 window.addEventListener('DOMContentLoaded', function() {
-    
-    caches.open('test-cache').then(function(cache) {
-        console.log("cache created");
-    });
+
+    var Cache = {
+        stack: {}, //Cache stack
+        load: function(id){ //Load cache if found
+            return (typeof(this.stack[id]) != 'undefined') ? this.stack[id] : false;
+        },
+        save: function(data,id){ //Cache data with unique id
+            this.stack[id] = data;
+        },
+        remove: function(id){ //Remove cache for identifier
+            if(typeof(this.stack[id]) != 'undefined')
+                delete this.stack[id];
+        }
+    };
 
     var view = document.getElementById('view');
     var currentPath = window.location.pathname;
-    
+
     fetchContent(currentPath);
 
     function changeContent(content) {
@@ -26,30 +36,31 @@ window.addEventListener('DOMContentLoaded', function() {
             route = "/one";
         }
 
-        caches.match('/views' + route + '.html').then(function(response) {
+        //We check the cache first.
+        var content = Cache.load('page' + route);
 
-            if (response) {
-                console.log('Cache found for /views' + route + '.html');
-                var actualData;
-                
-                response.text().then(function(data) {
-                    actualData = data;
-                    //console.log(actualData);
-                    console.log('Loaded from cache ✨');
-                    changeContent(actualData);
-                })
-            } else {
-                fetch('/views' + route + '.html', {})
-                .then( res => res.text())
-                .then((data) => {
-                    caches.open('test-cache').then(function(cache) {
-                        cache.add('/views' + route + '.html');
-                    });
-                    console.log('NOT loaded from cache 😢');
-                    changeContent(data);
-                });
-            }
-        });
+        //If cache is empty, it will return false.
+        if(content == false) {
+            //Retrieve the cache via AJAX request using jQuery
+            fetch('/views' + route + '.html', {})
+            .then( res => res.text())
+            .then((data) => {
+
+                if (route != '/four')
+                {
+                    //Save the cache, so next time no request is needed.
+                    Cache.save(data,'page' + route);
+                }
+
+                console.log('NOT loaded from cache 😢');
+                changeContent(data);
+            });
+
+        //Cache hit, load the content immediately
+        } else {
+            changeContent(content);
+            console.log('Loaded from cache ✨');
+        }
     }
 
     function pushRouteToWindowHistory(currentPath) {
@@ -68,5 +79,5 @@ window.addEventListener('DOMContentLoaded', function() {
     window.addEventListener('popstate', function() {
         fetchContent(window.location.pathname);
     });
-    
+
 })
