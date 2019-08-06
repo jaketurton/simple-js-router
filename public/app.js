@@ -50,10 +50,22 @@ window.addEventListener('DOMContentLoaded', function() {
     function updateUI(content) {
         view.innerHTML = content;
 
-        let activeRoutes = Array.from(document.querySelectorAll('.navigation'));
+        // let activeRoutes = Array.from(document.querySelectorAll('.navigation'));
 
-        activeRoutes.forEach(function(route) {
-            route.addEventListener('click', navigateOnClick, false);
+        // activeRoutes.forEach(function(route) {
+        //     route.addEventListener('click', navigateOnClick, false);
+        // });
+
+        document.addEventListener('click', function(e){
+            if(e.target.nodeName !== 'A')
+                return;
+
+            var href = e.target.attributes.href.nodeValue;
+            e.preventDefault();
+
+            if (href !== window.location.pathname){
+                navigateOnClick(e);
+            }
         });
     }
 
@@ -67,7 +79,6 @@ window.addEventListener('DOMContentLoaded', function() {
     }
 
     function navigateOnClick(e) {
-        e.preventDefault();
         const route = e.target.pathname;
         setView(route);
     };
