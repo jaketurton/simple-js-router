@@ -23,10 +23,14 @@ window.addEventListener('DOMContentLoaded', function() {
     function getContent(route) {
 
         let content = Cache.load('page' + route);
-        if (content)
+        if (content) {
+            console.log("Cache: hit");
             return Promise.resolve(content);
-
-        return fetchContent(route);
+        }
+        else {
+            console.log("Cache: not hit");
+            return fetchContent(route);
+        }
     }
 
     function fetchContent(route){
