@@ -50,9 +50,11 @@ window.addEventListener('DOMContentLoaded', function() {
             .then(res => res.text())
             .then(function (data)  {
 
-                if (route != '/four')
+                if (data.includes('//cache:on//'))
                 {
+                    data = data.replace('//cache:on//', '')
                     Cache.save(data,'page' + route);
+                    return data;
                 }
 
                 return data;
